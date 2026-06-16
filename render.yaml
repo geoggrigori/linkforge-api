@@ -1,0 +1,19 @@
+# Render blueprint — deploy LinkForge with one click.
+# In Render: New + → Blueprint → connect this repo. Render reads this file.
+services:
+  - type: web
+    name: linkforge-api
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    # Bind to the port Render provides (the Dockerfile's default 8000 is overridden here).
+    dockerCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true # Render generates a strong random secret
+      - key: BASE_URL
+        sync: false # set this to your Render URL, e.g. https://linkforge-api.onrender.com
+# Note: the free plan uses an ephemeral filesystem, so the SQLite data resets on
+# redeploys/sleep — fine for a demo. For persistence, add a paid disk or point
+# DATABASE_URL at a managed Postgres.
