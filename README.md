@@ -8,6 +8,8 @@ A **production-style URL shortener & analytics API** built with FastAPI. Not a t
 
 ---
 
+![LinkForge API — interactive OpenAPI docs](docs/screenshot.png)
+
 ## ✨ Features
 
 - **JWT authentication** — register/login, passwords hashed with PBKDF2-HMAC-SHA256 (per-user salt, constant-time verification). No plaintext, ever.
