@@ -12,6 +12,8 @@ services:
     envVars:
       - key: SECRET_KEY
         generateValue: true # Render generates a strong random secret
+      - key: DATABASE_URL
+        value: sqlite:////tmp/linkforge.db # /tmp is writable by the non-root container user
       - key: BASE_URL
         sync: false # set this to your Render URL, e.g. https://linkforge-api.onrender.com
 # Note: the free plan uses an ephemeral filesystem, so the SQLite data resets on
