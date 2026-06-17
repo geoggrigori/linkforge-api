@@ -1,5 +1,7 @@
 # LinkForge ⚡🔗
 
+**English** · [Português](README.pt.md) · [Español](README.es.md)
+
 A **production-style URL shortener & analytics API** built with FastAPI. Not a toy CRUD — it's designed to show the engineering that separates a hobby endpoint from a real service: authentication, rate limiting, caching, background processing, tests, containerization, and CI.
 
 > Create short links, redirect with cached sub-millisecond lookups, and track click analytics — all behind JWT auth.
@@ -38,26 +40,7 @@ Full, interactive docs at **`/docs`** once running.
 
 ## 🏗️ Architecture
 
-```
-                         ┌────────────────────────────┐
-  client ──HTTP──▶  Rate-limit middleware (token bucket, per IP)
-                         └──────────────┬─────────────┘
-                                        ▼
-          ┌───────────────────────────────────────────────┐
-          │                FastAPI routers                 │
-          │   /auth  ──▶ JWT issue/verify, PBKDF2 hashing   │
-          │   /links ──▶ CRUD + analytics (SQLModel/SQLite) │
-          │   /{code}──▶ redirect                           │
-          └───────┬───────────────────────┬────────────────┘
-                  │ cache hit              │ cache miss
-                  ▼                        ▼
-         TTL/LRU redirect cache     SQLite (SQLModel)
-                  │                        │
-                  └────────▶ 302 redirect ◀┘
-                                 │
-                                 ▼  (background task)
-                          record Click row
-```
+![Architecture](docs/architecture.svg)
 
 ## 🚀 Getting started
 

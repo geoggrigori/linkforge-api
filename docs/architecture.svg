@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 620" width="880" height="620" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#6b7280"/>
+    </marker>
+  </defs>
+
+  <!-- Canvas background -->
+  <rect x="1" y="1" width="878" height="618" rx="14" fill="#ffffff" stroke="#d0d7de" stroke-width="1"/>
+
+  <!-- Client -->
+  <rect x="360" y="28" width="160" height="48" rx="10" fill="#eef2ff" stroke="#6366f1" stroke-width="1.5"/>
+  <text x="440" y="57" text-anchor="middle" font-size="15" font-weight="600" fill="#1f2937">client</text>
+
+  <!-- client -> rate limit -->
+  <line x1="440" y1="76" x2="440" y2="108" stroke="#6b7280" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="452" y="97" font-size="11" fill="#6b7280">HTTP</text>
+
+  <!-- Rate-limit middleware -->
+  <rect x="230" y="110" width="420" height="56" rx="10" fill="#fef3c7" stroke="#d97706" stroke-width="1.5"/>
+  <text x="440" y="134" text-anchor="middle" font-size="14" font-weight="600" fill="#1f2937">Rate-limit middleware</text>
+  <text x="440" y="152" text-anchor="middle" font-size="11.5" fill="#374151">token bucket, per IP</text>
+
+  <!-- rate limit -> routers -->
+  <line x1="440" y1="166" x2="440" y2="196" stroke="#6b7280" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- FastAPI routers container -->
+  <rect x="70" y="198" width="740" height="158" rx="12" fill="#f3e8ff" stroke="#9333ea" stroke-width="1.5"/>
+  <text x="440" y="222" text-anchor="middle" font-size="14" font-weight="700" fill="#1f2937">FastAPI routers</text>
+
+  <!-- /auth -->
+  <rect x="92" y="240" width="220" height="92" rx="10" fill="#ffffff" stroke="#9333ea" stroke-width="1.5"/>
+  <text x="202" y="266" text-anchor="middle" font-size="13" font-weight="600" fill="#1f2937">/auth</text>
+  <text x="202" y="288" text-anchor="middle" font-size="11" fill="#374151">JWT issue / verify</text>
+  <text x="202" y="306" text-anchor="middle" font-size="11" fill="#374151">PBKDF2 hashing</text>
+
+  <!-- /links -->
+  <rect x="330" y="240" width="220" height="92" rx="10" fill="#ffffff" stroke="#9333ea" stroke-width="1.5"/>
+  <text x="440" y="266" text-anchor="middle" font-size="13" font-weight="600" fill="#1f2937">/links</text>
+  <text x="440" y="288" text-anchor="middle" font-size="11" fill="#374151">CRUD + analytics</text>
+  <text x="440" y="306" text-anchor="middle" font-size="11" fill="#374151">SQLModel / SQLite</text>
+
+  <!-- /{code} -->
+  <rect x="568" y="240" width="220" height="92" rx="10" fill="#ffffff" stroke="#9333ea" stroke-width="1.5"/>
+  <text x="678" y="266" text-anchor="middle" font-size="13" font-weight="600" fill="#1f2937">/{code}</text>
+  <text x="678" y="288" text-anchor="middle" font-size="11" fill="#374151">redirect</text>
+
+  <!-- redirect branches -->
+  <!-- from /{code} down to cache and db -->
+  <line x1="640" y1="332" x2="560" y2="406" stroke="#6b7280" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="540" y="372" text-anchor="middle" font-size="11" fill="#6b7280">cache hit</text>
+
+  <line x1="716" y1="332" x2="760" y2="406" stroke="#6b7280" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="772" y="372" text-anchor="middle" font-size="11" fill="#6b7280">cache miss</text>
+
+  <!-- TTL/LRU cache -->
+  <rect x="430" y="408" width="200" height="56" rx="10" fill="#ecfdf5" stroke="#059669" stroke-width="1.5"/>
+  <text x="530" y="432" text-anchor="middle" font-size="13" font-weight="600" fill="#1f2937">TTL / LRU redirect cache</text>
+  <text x="530" y="450" text-anchor="middle" font-size="11" fill="#374151">hot code → URL lookups</text>
+
+  <!-- SQLite -->
+  <rect x="660" y="408" width="160" height="56" rx="10" fill="#ecfdf5" stroke="#059669" stroke-width="1.5"/>
+  <text x="740" y="432" text-anchor="middle" font-size="13" font-weight="600" fill="#1f2937">SQLite</text>
+  <text x="740" y="450" text-anchor="middle" font-size="11" fill="#374151">SQLModel</text>
+
+  <!-- both -> 302 redirect -->
+  <line x1="530" y1="464" x2="530" y2="522" stroke="#6b7280" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="740" y1="464" x2="600" y2="522" stroke="#6b7280" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- 302 redirect -->
+  <rect x="460" y="524" width="200" height="48" rx="10" fill="#eef2ff" stroke="#6366f1" stroke-width="1.5"/>
+  <text x="560" y="553" text-anchor="middle" font-size="14" font-weight="600" fill="#1f2937">302 redirect</text>
+
+  <!-- background task -> Click row -->
+  <line x1="678" y1="332" x2="240" y2="406" stroke="#6b7280" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#arrow)"/>
+  <text x="330" y="360" text-anchor="middle" font-size="11" fill="#6b7280">background task</text>
+
+  <!-- Click row -->
+  <rect x="90" y="408" width="200" height="56" rx="10" fill="#fef3c7" stroke="#d97706" stroke-width="1.5"/>
+  <text x="190" y="432" text-anchor="middle" font-size="13" font-weight="600" fill="#1f2937">record Click row</text>
+  <text x="190" y="450" text-anchor="middle" font-size="11" fill="#374151">off the response path</text>
+
+  <!-- legend -->
+  <text x="30" y="600" font-size="11" fill="#6b7280">LinkForge — FastAPI URL shortener &amp; analytics · request flow</text>
+</svg>
