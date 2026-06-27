@@ -92,3 +92,7 @@ La suite levanta la aplicación contra una base de datos SQLite desechable y eje
 ---
 
 Construido como proyecto de portafolio para demostrar profundidad en ingeniería de backend: autenticación, middleware, caché, trabajo asíncrono, pruebas y despliegue.
+
+## Licencia
+
+Distribuido bajo la [Licencia MIT](LICENSE).

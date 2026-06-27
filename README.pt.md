@@ -92,3 +92,7 @@ A suíte sobe a aplicação contra um banco de dados SQLite descartável e exerc
 ---
 
 Construído como projeto de portfólio para demonstrar profundidade em engenharia de backend: autenticação, middleware, cache, trabalho assíncrono, testes e deploy.
+
+## Licença
+
+Distribuído sob a [Licença MIT](LICENSE).

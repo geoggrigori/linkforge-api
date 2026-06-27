@@ -92,3 +92,7 @@ The suite spins the app against a throwaway SQLite database and exercises the fu
 ---
 
 Built as a portfolio project to demonstrate backend engineering depth: auth, middleware, caching, async work, testing, and deployment.
+
+## License
+
+Released under the [MIT License](LICENSE).
