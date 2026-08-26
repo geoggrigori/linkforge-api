@@ -1,98 +1,121 @@
-# LinkForge ⚡🔗
+<!-- ══════════════════════════ TÍTULO ══════════════════════════ -->
+<div align="center">
+  <img src="docs/title-banner.svg" width="100%" alt="LinkForge"/>
+</div>
 
-**English** · [Português](README.pt.md) · [Español](README.es.md)
+<!-- ══════════════════════ IDIOMAS / LANGUAGES ══════════════════════ -->
+<div align="center">
+<a href="README.md"><img src="https://img.shields.io/badge/Português-1987F0?style=for-the-badge" alt="Português"/></a>
+<a href="README.en.md"><img src="https://img.shields.io/badge/English-555555?style=for-the-badge" alt="English"/></a>
+<a href="README.es.md"><img src="https://img.shields.io/badge/Español-555555?style=for-the-badge" alt="Español"/></a>
+</div>
 
-A **production-style URL shortener & analytics API** built with FastAPI. Not a toy CRUD — it's designed to show the engineering that separates a hobby endpoint from a real service: authentication, rate limiting, caching, background processing, tests, containerization, and CI.
+<h1 align="center">LinkForge ⚡🔗</h1>
+<p align="center"><em>Encurtador de URL & API de analytics com pegada de produção — não é um CRUD de brinquedo</em></p>
+<p align="center"><strong>JWT auth → rate limiting → cache TTL/LRU → redirect → analytics assíncrono</strong></p>
 
-> Create short links, redirect with cached sub-millisecond lookups, and track click analytics — all behind JWT auth.
+<div align="center">
+<a href="https://github.com/geoggrigori/linkforge-api/actions/workflows/ci.yml"><img src="https://github.com/geoggrigori/linkforge-api/actions/workflows/ci.yml/badge.svg" alt="CI"/></a>
+<br/>
+<img src="https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white" alt="fastapi"/>
+<img src="https://img.shields.io/badge/SQLModel_%2F_SQLAlchemy-D71F00?style=flat-square" alt="sqlmodel"/>
+<img src="https://img.shields.io/badge/JWT-000000?style=flat-square&logo=jsonwebtokens&logoColor=white" alt="jwt"/>
+<img src="https://img.shields.io/badge/pytest-0A9EDC?style=flat-square&logo=pytest&logoColor=white" alt="pytest"/>
+<img src="https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white" alt="docker"/>
+</div>
 
-[![CI](https://github.com/geoggrigori/linkforge-api/actions/workflows/ci.yml/badge.svg)](https://github.com/geoggrigori/linkforge-api/actions/workflows/ci.yml)
+<div align="center">
+<a href="#sobre"><img src="https://img.shields.io/badge/▸_SOBRE-1987F0?style=for-the-badge" alt="sobre"/></a>
+<a href="#api"><img src="https://img.shields.io/badge/▸_API-000000?style=for-the-badge" alt="api"/></a>
+<a href="#arquitetura"><img src="https://img.shields.io/badge/▸_ARQUITETURA-1987F0?style=for-the-badge" alt="arquitetura"/></a>
+<a href="#tecnologias"><img src="https://img.shields.io/badge/▸_TECNOLOGIAS-000000?style=for-the-badge" alt="tech"/></a>
+<a href="#uso"><img src="https://img.shields.io/badge/▸_USO-1987F0?style=for-the-badge" alt="uso"/></a>
+</div>
 
----
+<br/>
 
-![LinkForge API — interactive OpenAPI docs](docs/screenshot.png)
+> 💡 **Não esconde os algoritmos.** Rate limiter (token bucket) e cache (TTL/LRU) são implementados do zero para mostrar a engenharia por trás, não escondida atrás de uma lib.
 
-## ✨ Features
+<div align="center">
+  <img src="docs/screenshot.png" width="100%" alt="LinkForge API — documentação OpenAPI interativa"/>
+</div>
 
-- **JWT authentication** — register/login, passwords hashed with PBKDF2-HMAC-SHA256 (per-user salt, constant-time verification). No plaintext, ever.
-- **Token-bucket rate limiting** — custom ASGI middleware, per-client-IP, with `Retry-After`. No Redis needed for a single instance.
-- **TTL + LRU redirect cache** — hot `code → URL` lookups skip the database; thread-safe, bounded, with automatic expiry.
-- **Async click analytics** — redirects record clicks in a background task, off the response path. Stats endpoint aggregates totals, clicks-by-day, and top referrers.
-- **Ownership & authorization** — users only see and manage their own links.
-- **Auto-generated OpenAPI docs** — interactive Swagger UI at `/docs`, ReDoc at `/redoc`.
-- **Fully tested** — 16 pytest tests covering auth, validation, redirects, analytics, and authorization.
-- **Containerized + CI** — multi-stage-friendly Dockerfile (non-root, healthcheck), `docker-compose`, GitHub Actions running the suite on every push.
+## Sobre
 
-## 🧩 API overview
+**LinkForge** é um **encurtador de URL & API de analytics com pegada de produção**, construído com FastAPI. Não é um CRUD de brinquedo — foi desenhado para mostrar a engenharia que separa um endpoint de hobby de um serviço de verdade: autenticação, rate limiting, cache, processamento em background, testes, containerização e CI.
 
-| Method | Endpoint | Auth | Description |
-|--------|----------|:----:|-------------|
-| `POST` | `/auth/register` | — | Create an account |
-| `POST` | `/auth/login` | — | Get a JWT access token |
-| `POST` | `/links` | ✅ | Create a short link (random or custom code) |
-| `GET`  | `/links` | ✅ | List your links with click counts |
-| `GET`  | `/links/{code}/stats` | ✅ | Analytics for a link |
-| `DELETE` | `/links/{code}` | ✅ | Delete a link |
-| `GET`  | `/{code}` | — | Redirect to the target URL (302) + record click |
-| `GET`  | `/health` | — | Liveness probe |
+**Destaques:**
+- **JWT** — registro/login, senhas com PBKDF2-HMAC-SHA256 (salt por usuário, verificação em tempo constante). Nunca texto puro.
+- **Rate limiting (token bucket)** — middleware ASGI próprio, por IP, com `Retry-After`. Sem precisar de Redis pra uma instância só.
+- **Cache TTL + LRU** — lookups quentes `code → URL` pulam o banco; thread-safe, limitado, com expiração automática.
+- **Analytics assíncrono** — cliques são registrados em background task, fora do caminho de resposta. Endpoint de stats agrega totais, cliques-por-dia e top referrers.
+- **Ownership** — cada usuário só vê e gerencia seus próprios links.
+- **Docs OpenAPI automáticas** — Swagger UI interativo em `/docs`, ReDoc em `/redoc`.
+- **Totalmente testado** — 16 testes pytest cobrindo auth, validação, redirects, analytics e autorização.
+- **Containerizado + CI** — Dockerfile (non-root, healthcheck), `docker-compose`, GitHub Actions rodando a suíte a cada push.
 
-Full, interactive docs at **`/docs`** once running.
+## API
 
-## 🏗️ Architecture
+| Método | Endpoint | Auth | Descrição |
+|---|---|:---:|---|
+| `POST` | `/auth/register` | — | Cria uma conta |
+| `POST` | `/auth/login` | — | Retorna um token JWT |
+| `POST` | `/links` | ✅ | Cria um link curto (código aleatório ou customizado) |
+| `GET` | `/links` | ✅ | Lista seus links com contagem de cliques |
+| `GET` | `/links/{code}/stats` | ✅ | Analytics de um link |
+| `DELETE` | `/links/{code}` | ✅ | Remove um link |
+| `GET` | `/{code}` | — | Redireciona para a URL alvo (302) + registra o clique |
+| `GET` | `/health` | — | Liveness probe |
 
-![Architecture](docs/architecture.svg)
+Docs completas e interativas em **`/docs`** com o app rodando.
 
-## 🚀 Getting started
+## Arquitetura
 
-### Local
+<div align="center">
+  <img src="docs/architecture.svg" width="100%" alt="Arquitetura"/>
+</div>
 
+## Tecnologias
+
+| Camada | Tecnologia |
+|---|---|
+| Framework | FastAPI (+ middleware Starlette) |
+| Dados | SQLModel / SQLAlchemy, SQLite (pronto pra Postgres via `DATABASE_URL`) |
+| Auth | PyJWT + PBKDF2 da stdlib |
+| Testes | pytest + httpx (`TestClient`) |
+| Ops | Docker, docker-compose, GitHub Actions |
+
+## Uso
+
+**Local:**
 ```bash
-# 1. Create a virtual environment and install deps
 python -m venv .venv
 source .venv/bin/activate          # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 
-# 2. (optional) copy env defaults
-cp .env.example .env
+cp .env.example .env   # opcional
 
-# 3. Run
 uvicorn app.main:app --reload
 ```
+Abra **http://localhost:8000/docs** e teste.
 
-Open **http://localhost:8000/docs** and try it out.
-
-### Docker
-
+**Docker:**
 ```bash
 docker compose up --build
 ```
 
-## 🧪 Tests
-
+**Testes:**
 ```bash
 pytest -q
 ```
+A suíte sobe o app contra um SQLite descartável e exercita o ciclo completo (auth → criação → redirect → analytics → autorização).
 
-The suite spins the app against a throwaway SQLite database and exercises the full request lifecycle (auth → create → redirect → analytics → authorization).
+## Licença
 
-## 🛠️ Tech stack
+[MIT](LICENSE).
 
-- **Framework:** FastAPI (+ Starlette middleware)
-- **Data:** SQLModel / SQLAlchemy, SQLite (Postgres-ready via `DATABASE_URL`)
-- **Auth:** PyJWT + standard-library PBKDF2
-- **Testing:** pytest + httpx (`TestClient`)
-- **Ops:** Docker, docker-compose, GitHub Actions
+<div align="center">
+  <img src="https://file.loading.io/color/feature/thumb/Blues-8.png?" width="100%" height="10px" alt="divider"/>
+</div>
 
-## 📝 Design notes
-
-- **Why PBKDF2 from the stdlib?** Avoids a native crypto dependency while staying secure (200k iterations, per-password salt). Swappable for argon2/bcrypt if desired.
-- **Why a custom rate limiter & cache?** To demonstrate the underlying algorithms (token bucket, TTL/LRU) rather than hide them behind a library. In a multi-instance deployment you'd back these with Redis.
-- **Scaling path:** point `DATABASE_URL` at Postgres, move the cache/rate-limiter to Redis, and the app scales horizontally with no code changes to the routers.
-
----
-
-Built as a portfolio project to demonstrate backend engineering depth: auth, middleware, caching, async work, testing, and deployment.
-
-## License
-
-Released under the [MIT License](LICENSE).
+<p align="center"><sub>Desenvolvido por <strong><a href="https://github.com/geoggrigori">Grigori</a></strong> · 2026</sub></p>
