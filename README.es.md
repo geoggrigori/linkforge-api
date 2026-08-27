@@ -14,10 +14,6 @@
 
 <br/>
 
-<h1 align="center">LinkForge ⚡🔗</h1>
-<p align="center"><em>Acortador de URL & API de analytics de nivel producción — no es un CRUD de juguete</em></p>
-<p align="center"><strong>JWT auth → rate limiting → caché TTL/LRU → redirect → analytics asíncrono</strong></p>
-
 <div align="center">
 <a href="https://github.com/geoggrigori/linkforge-api/actions/workflows/ci.yml"><img src="https://github.com/geoggrigori/linkforge-api/actions/workflows/ci.yml/badge.svg" alt="CI"/></a>
 <br/>
